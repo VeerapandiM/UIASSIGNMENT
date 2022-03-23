@@ -1,0 +1,27 @@
+version: 0.1
+phases:
+    install:
+        commands:
+            - echo username and groups 
+            - w
+            - less /etc/passwd
+            - aws configure list
+            - echo Installing source NPM dependencies...
+            - npm install
+            - npm install -g @angular/cli@9.1.7
+    pre_build:
+        commands:
+            - pip3 install awscli --upgrade --user
+            - aws codeartifact login --tool npm --domain fsisolutions --domain-owner 389782930135 --repository AuthLibrary
+            - npm -d ping
+            - npm install authlibrary@1.1.1
+            - cd node_modules/authlibrary/src/types && ls -a
+    build:
+        commands:
+            - echo Build started on `date`
+            - ng build --prod --aot --lazyModules
+            - echo $CODEBUILD_SRC_DIR
+artifacts:
+    files:
+        - 'UWCockpit/**/*'
+    base-directory: 'dist'
